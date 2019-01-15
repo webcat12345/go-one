@@ -1,11 +1,15 @@
 package main
 
 import (
+	"context"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"github.com/mongodb/mongo-go-driver/mongo"
+	"github.com/mongodb/mongo-go-driver/mongo/readpref"
 	"io"
 	"net/http"
 	"os"
+	"time"
 )
 
 type User struct {
@@ -15,6 +19,13 @@ type User struct {
 
 func main() {
 	e := echo.New()
+
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	client, err := mongo.Connect(ctx, "mongodb://localhost:27017")
+	if err != nil {
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
 
 	// root level middleware
 	e.Use(middleware.Logger())

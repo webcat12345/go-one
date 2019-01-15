@@ -1,0 +1,23 @@
+settings:
+  legacy:
+    force: false
+    interval: 0s
+schema:
+- name: go-one
+  path: .
+  commands:
+    fmt:
+      status: true
+    install:
+      status: true
+    run:
+      status: true
+  watcher:
+    extensions:
+    - go
+    paths:
+    - /
+    ignored_paths:
+    - .git
+    - .realize
+    - vendor

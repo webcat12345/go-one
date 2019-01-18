@@ -1,7 +1,10 @@
 [[constraint]]
   name = "github.com/labstack/echo"
   version = "3.3.8"
+[[constraint]]
+  name = "github.com/go-pg/pg"
+  version = "7.1.6"
 
 [[constraint]]
-  name = "github.com/mongodb/mongo-go-driver"
-  version = "0.2.0"
+  name = "github.com/pressly/goose"
+  version = "2.4.5"

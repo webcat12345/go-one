@@ -8,16 +8,10 @@
   version = "v3.2.0"
 
 [[projects]]
-  name = "github.com/go-stack/stack"
+  name = "github.com/go-sql-driver/mysql"
   packages = ["."]
-  revision = "2fee6af1a9795aafbe0253a0cfbdf668e1fb8a9a"
-  version = "v1.8.0"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/golang/snappy"
-  packages = ["."]
-  revision = "2e65f85255dbc3072edf28d6b5b8efc472979f5a"
+  revision = "72cd26f257d44c1114970e19afddcd812016007e"
+  version = "v1.4.1"
 
 [[projects]]
   name = "github.com/labstack/echo"
@@ -32,6 +26,12 @@
   version = "v0.2.8"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/lib/pq"
+  packages = [".","oid"]
+  revision = "9eb73efc1fcc404148b56765b0d3f61d9a5ef8ee"
+
+[[projects]]
   name = "github.com/mattn/go-colorable"
   packages = ["."]
   revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
@@ -44,10 +44,16 @@
   version = "v0.0.4"
 
 [[projects]]
-  name = "github.com/mongodb/mongo-go-driver"
-  packages = ["bson","bson/bsoncodec","bson/bsonrw","bson/bsontype","bson/primitive","event","internal","mongo","mongo/options","mongo/readconcern","mongo/readpref","mongo/writeconcern","tag","version","x/bsonx","x/bsonx/bsoncore","x/mongo/driver","x/mongo/driver/auth","x/mongo/driver/auth/internal/gssapi","x/mongo/driver/session","x/mongo/driver/topology","x/mongo/driver/uuid","x/network/address","x/network/command","x/network/compressor","x/network/connection","x/network/connstring","x/network/description","x/network/result","x/network/wiremessage"]
-  revision = "3cfdc9ffcf780eede57d27ec26a3edad4c9ab6a9"
-  version = "v0.2.0"
+  name = "github.com/mattn/go-sqlite3"
+  packages = ["."]
+  revision = "c7c4067b79cc51e6dfdcef5c702e74b1e0fa7c75"
+  version = "v1.10.0"
+
+[[projects]]
+  name = "github.com/pressly/goose"
+  packages = [".","cmd/goose"]
+  revision = "7a98874933001af28951c83e958b1db750f39f8d"
+  version = "v2.4.5"
 
 [[projects]]
   name = "github.com/valyala/bytebufferpool"
@@ -62,28 +68,16 @@
   revision = "dcecefd839c4193db0d35b88ec65b4c12d360ab0"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/xdg/scram"
-  packages = ["."]
-  revision = "7eeb5667e42c09cb51bf7b7c28aea8c56767da90"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/xdg/stringprep"
-  packages = ["."]
-  revision = "73f8eece6fdcd902c185bf651de50f3828bed5ed"
+  name = "github.com/ziutek/mymysql"
+  packages = ["godrv","mysql","native"]
+  revision = "e08c2f35356576b3c3690c252fe5dca728ae9292"
+  version = "v1.5.4"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
-  packages = ["acme","acme/autocert","pbkdf2"]
+  packages = ["acme","acme/autocert"]
   revision = "ff983b9c42bc9fbf91556e191cc8efb585c16908"
-
-[[projects]]
-  branch = "master"
-  name = "golang.org/x/sync"
-  packages = ["semaphore"]
-  revision = "37e7f081c4d4c64e13b10787722085407fe5d15f"
 
 [[projects]]
   branch = "master"
@@ -92,14 +86,14 @@
   revision = "2be51725563103c17124a318f1745b66f2347acb"
 
 [[projects]]
-  name = "golang.org/x/text"
-  packages = ["internal/gen","internal/triegen","internal/ucd","transform","unicode/cldr","unicode/norm"]
-  revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
-  version = "v0.3.0"
+  name = "google.golang.org/appengine"
+  packages = ["cloudsql"]
+  revision = "e9657d882bb81064595ca3b56cbe2546bbabf7b1"
+  version = "v1.4.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "98c0f4459bf2405bc1e2acac12a92e4d23f0dd930ebc84fcbafef7e6e3206f78"
+  inputs-digest = "9e844f910ec0bd644ba4e1ec90f96471c5cc2a7e96098013b3b1a4112081b27a"
   solver-name = "gps-cdcl"
   solver-version = 1

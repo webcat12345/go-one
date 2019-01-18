@@ -2,13 +2,17 @@ package services
 
 import (
 	"github.com/go-pg/pg"
+	"github.com/labstack/echo"
 	"github.com/webcat12345/go-one/core/repository"
 	"github.com/webcat12345/go-one/model"
+	"golang.org/x/crypto/bcrypt"
+	"net/http"
 )
 
 type (
 	UserService interface {
 		GetUsers() ([]*model.User, error)
+		CreateUser(email, password string) (*model.User, error)
 	}
 	DefaultUserService struct {
 		userRepository repository.UserRepository
@@ -23,4 +27,19 @@ func NewUserService(db *pg.DB) UserService {
 
 func (s *DefaultUserService) GetUsers() ([]*model.User, error) {
 	return s.userRepository.FindAll()
+}
+
+func (s *DefaultUserService) CreateUser(email, password string) (*model.User, error) {
+
+	// hash password
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Failed to hashing a password")
+	}
+
+	user := &model.User{
+		Email:    email,
+		Password: hash,
+	}
+	return s.userRepository.Create(user)
 }

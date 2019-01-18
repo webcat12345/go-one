@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"github.com/go-pg/pg"
 	"github.com/webcat12345/go-one/model"
 )
@@ -8,6 +9,7 @@ import (
 type (
 	UserRepository interface {
 		FindAll() ([]*model.User, error)
+		Create(*model.User) (*model.User, error)
 	}
 	DefaultUserRepository struct {
 		db *pg.DB
@@ -24,5 +26,15 @@ func (r *DefaultUserRepository) FindAll() ([]*model.User, error) {
 		return nil, err
 	} else {
 		return users, nil
+	}
+}
+
+func (r *DefaultUserRepository) Create(user *model.User) (*model.User, error) {
+	res, err := r.db.Model(user).Returning("*").Insert()
+	fmt.Println(res, err)
+	if err != nil {
+		return nil, err
+	} else {
+		return user, nil
 	}
 }

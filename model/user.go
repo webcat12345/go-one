@@ -3,7 +3,6 @@ package model
 import "time"
 
 type User struct {
-	tableName  struct{}  `sql:"users,alias:user"`
 	Id         int       `json:"id"`
 	Email      string    `json:"email" sql:"type:varchar(255),notnull,unique"`
 	Password   []byte    `json:"-" sql:",notnull"`

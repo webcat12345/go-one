@@ -12,6 +12,7 @@ import (
 type (
 	UserService interface {
 		GetUsers() ([]*model.User, error)
+		GetUserById(id int) (*model.User, error)
 		CreateUser(email, password string) (*model.User, error)
 	}
 	DefaultUserService struct {
@@ -29,6 +30,14 @@ func (s *DefaultUserService) GetUsers() ([]*model.User, error) {
 	res, err := s.userRepository.FindAll()
 	if err != nil {
 		return nil, echo.NewHTTPError(http.StatusBadRequest, "Failed to get users")
+	}
+	return res, nil
+}
+
+func (s *DefaultUserService) GetUserById(id int) (*model.User, error) {
+	res, err := s.userRepository.FindById(id)
+	if err != nil {
+		return nil, echo.NewHTTPError(http.StatusBadRequest, "Failed to get user")
 	}
 	return res, nil
 }

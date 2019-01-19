@@ -9,6 +9,7 @@ type (
 	UserRepository interface {
 		ExistsByEmail(email string) bool
 		FindAll() ([]*model.User, error)
+		FindById(id int) (*model.User, error)
 		FindByEmail(email string) (*model.User, error)
 		Create(*model.User) (*model.User, error)
 	}
@@ -36,6 +37,15 @@ func (r *DefaultUserRepository) FindByEmail(email string) (*model.User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (r *DefaultUserRepository) FindById(id int) (*model.User, error) {
+	user := &model.User{Id: id}
+	err := r.db.Select(user)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 func (r *DefaultUserRepository) ExistsByEmail(email string) bool {

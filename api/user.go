@@ -5,6 +5,7 @@ import (
 	"github.com/webcat12345/go-one/core/server"
 	"github.com/webcat12345/go-one/core/services"
 	"net/http"
+	"strconv"
 )
 
 type userHandler struct {
@@ -18,22 +19,34 @@ func MountUserHandler(group *echo.Group, service services.UserService) {
 	}
 
 	group.GET("/users", handler.getUsers)
-	group.POST("/user", handler.createUser)
+	group.GET("/users/:id", handler.getUserById)
+	group.POST("/users", handler.createUser)
+}
+
+func (h *userHandler) getUserById(ctx echo.Context) error {
+	id, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Failed to get id from the request")
+	}
+	user, err := h.userService.GetUserById(id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Failed to get user from id")
+	}
+	return ctx.JSON(http.StatusOK, server.JSON{
+		Success: true,
+		Data:    user,
+	})
 }
 
 func (h *userHandler) getUsers(ctx echo.Context) error {
 	users, err := h.userService.GetUsers()
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, server.JSON{
-			Status:  http.StatusBadRequest,
-			Message: "Failed to get users",
-		})
-	} else {
-		return ctx.JSON(http.StatusOK, server.JSON{
-			Status: http.StatusOK,
-			Data:   users,
-		})
+		return err
 	}
+	return ctx.JSON(http.StatusOK, server.JSON{
+		Success: true,
+		Data:    users,
+	})
 }
 
 func (h *userHandler) createUser(ctx echo.Context) error {
@@ -43,11 +56,15 @@ func (h *userHandler) createUser(ctx echo.Context) error {
 	}
 	err := ctx.Bind(&payload)
 	if err != nil {
-		return nil
+		return echo.NewHTTPError(http.StatusBadRequest, "Failed to parse payload")
 	}
 	user, err := h.userService.CreateUser(payload.Email, payload.Password)
+
+	if err != nil {
+		return err
+	}
 	return ctx.JSON(http.StatusCreated, server.JSON{
-		Status: http.StatusCreated,
-		Data:   user,
+		Success: true,
+		Data:    user,
 	})
 }

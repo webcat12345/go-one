@@ -1,12 +1,14 @@
 package services
 
 import (
+	"github.com/dgrijalva/jwt-go"
 	"github.com/go-pg/pg"
 	"github.com/labstack/echo"
 	"github.com/webcat12345/go-one/core/repository"
 	"github.com/webcat12345/go-one/model"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
+	"time"
 )
 
 type (
@@ -14,6 +16,7 @@ type (
 		GetUsers() ([]*model.User, error)
 		GetUserById(id int) (*model.User, error)
 		CreateUser(email, password string) (*model.User, error)
+		Login(email, password string) (map[string]string, error)
 	}
 	DefaultUserService struct {
 		userRepository repository.UserRepository
@@ -60,4 +63,35 @@ func (s *DefaultUserService) CreateUser(email, password string) (*model.User, er
 		Password: hash,
 	}
 	return s.userRepository.Create(user)
+}
+
+func (s *DefaultUserService) Login(email, password string) (map[string]string, error) {
+	// check user existance
+	user, err := s.userRepository.FindByEmail(email)
+	if err != nil {
+		return nil, echo.NewHTTPError(http.StatusBadRequest, "User does not exists")
+	}
+	// check password
+	if err := s.ComparePassword(user.Password, password); err != nil {
+		return nil, err
+	}
+	// build jwt token using HS256
+	token := jwt.New(jwt.SigningMethodHS256)
+	claims := token.Claims.(jwt.MapClaims)
+	claims["id"] = user.Id
+	claims["exp"] = time.Now().Add(time.Hour * 2).Unix()
+	// generate encoded token
+	t, err := token.SignedString([]byte("secret"))
+	if err != nil {
+		return nil, echo.NewHTTPError(http.StatusBadRequest, "Failed to create jwt token")
+	}
+
+	return map[string]string{"token": t}, nil
+}
+
+func (s *DefaultUserService) ComparePassword(hash []byte, password string) error {
+	if err := bcrypt.CompareHashAndPassword(hash, []byte(password)); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Password does not match")
+	}
+	return nil
 }

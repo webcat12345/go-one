@@ -18,9 +18,31 @@ func MountUserHandler(group *echo.Group, service services.UserService) {
 		userService: service,
 	}
 
+	group.POST("/login", handler.login)
+	// group.GET("/auth")
+
 	group.GET("/users", handler.getUsers)
 	group.GET("/users/:id", handler.getUserById)
 	group.POST("/users", handler.createUser)
+}
+
+func (h *userHandler) login(ctx echo.Context) error {
+	var payload struct {
+		Email    string `json:"email" valid:"required,email"`
+		Password string `json:"password" valid:"required,length(8|64)"`
+	}
+	err := ctx.Bind(&payload)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request")
+	}
+	token, err := h.userService.Login(payload.Email, payload.Password)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(http.StatusOK, server.JSON{
+		Data:    token,
+		Success: true,
+	})
 }
 
 func (h *userHandler) getUserById(ctx echo.Context) error {

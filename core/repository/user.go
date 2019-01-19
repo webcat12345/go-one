@@ -24,9 +24,8 @@ func (r *DefaultUserRepository) FindAll() ([]*model.User, error) {
 	var users []*model.User
 	if err := r.db.Model(&users).Select(); err != nil {
 		return nil, err
-	} else {
-		return users, nil
 	}
+	return users, nil
 }
 
 func (r *DefaultUserRepository) Create(user *model.User) (*model.User, error) {
@@ -34,7 +33,6 @@ func (r *DefaultUserRepository) Create(user *model.User) (*model.User, error) {
 	fmt.Println(res, err)
 	if err != nil {
 		return nil, err
-	} else {
-		return user, nil
 	}
+	return user, nil
 }

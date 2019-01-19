@@ -28,12 +28,11 @@ func (h *userHandler) getUsers(ctx echo.Context) error {
 			Status:  http.StatusBadRequest,
 			Message: "Failed to get users",
 		})
-	} else {
-		return ctx.JSON(http.StatusOK, server.JSON{
-			Status: http.StatusOK,
-			Data:   users,
-		})
 	}
+	return ctx.JSON(http.StatusOK, server.JSON{
+		Status: http.StatusOK,
+		Data:   users,
+	})
 }
 
 func (h *userHandler) createUser(ctx echo.Context) error {

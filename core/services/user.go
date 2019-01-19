@@ -26,10 +26,19 @@ func NewUserService(db *pg.DB) UserService {
 }
 
 func (s *DefaultUserService) GetUsers() ([]*model.User, error) {
-	return s.userRepository.FindAll()
+	res, err := s.userRepository.FindAll()
+	if err != nil {
+		return nil, echo.NewHTTPError(http.StatusBadRequest, "Failed to get users")
+	}
+	return res, nil
 }
 
 func (s *DefaultUserService) CreateUser(email, password string) (*model.User, error) {
+
+	// check if email already exists
+	if s.userRepository.ExistsByEmail(email) {
+		return nil, echo.NewHTTPError(http.StatusBadRequest, "Email already exists")
+	}
 
 	// hash password
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)

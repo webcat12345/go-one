@@ -24,10 +24,7 @@ func MountUserHandler(group *echo.Group, service services.UserService) {
 func (h *userHandler) getUsers(ctx echo.Context) error {
 	users, err := h.userService.GetUsers()
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, server.JSON{
-			Status:  http.StatusBadRequest,
-			Message: "Failed to get users",
-		})
+		return err
 	}
 	return ctx.JSON(http.StatusOK, server.JSON{
 		Status: http.StatusOK,
@@ -42,9 +39,13 @@ func (h *userHandler) createUser(ctx echo.Context) error {
 	}
 	err := ctx.Bind(&payload)
 	if err != nil {
-		return nil
+		return echo.NewHTTPError(http.StatusBadRequest, "Failed to parse payload")
 	}
 	user, err := h.userService.CreateUser(payload.Email, payload.Password)
+
+	if err != nil {
+		return err
+	}
 	return ctx.JSON(http.StatusCreated, server.JSON{
 		Status: http.StatusCreated,
 		Data:   user,

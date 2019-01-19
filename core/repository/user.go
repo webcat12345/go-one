@@ -1,14 +1,15 @@
 package repository
 
 import (
-	"fmt"
 	"github.com/go-pg/pg"
 	"github.com/webcat12345/go-one/model"
 )
 
 type (
 	UserRepository interface {
+		ExistsByEmail(email string) bool
 		FindAll() ([]*model.User, error)
+		FindByEmail(email string) (*model.User, error)
 		Create(*model.User) (*model.User, error)
 	}
 	DefaultUserRepository struct {
@@ -28,9 +29,25 @@ func (r *DefaultUserRepository) FindAll() ([]*model.User, error) {
 	return users, nil
 }
 
+func (r *DefaultUserRepository) FindByEmail(email string) (*model.User, error) {
+	var user model.User
+	err := r.db.Model(&user).Where("email = ?", email).Select()
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (r *DefaultUserRepository) ExistsByEmail(email string) bool {
+	_, err := r.FindByEmail(email)
+	if err != nil {
+		return false
+	}
+	return true
+}
+
 func (r *DefaultUserRepository) Create(user *model.User) (*model.User, error) {
-	res, err := r.db.Model(user).Returning("*").Insert()
-	fmt.Println(res, err)
+	_, err := r.db.Model(user).Returning("*").Insert()
 	if err != nil {
 		return nil, err
 	}

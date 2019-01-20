@@ -1,14 +1,13 @@
 package services
 
 import (
-	"github.com/dgrijalva/jwt-go"
 	"github.com/go-pg/pg"
 	"github.com/labstack/echo"
 	"github.com/webcat12345/go-one/core/repository"
+	"github.com/webcat12345/go-one/core/tokenizer"
 	"github.com/webcat12345/go-one/model"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
-	"time"
 )
 
 type (
@@ -75,18 +74,13 @@ func (s *DefaultUserService) Login(email, password string) (map[string]string, e
 	if err := s.ComparePassword(user.Password, password); err != nil {
 		return nil, err
 	}
-	// build jwt token using HS256
-	token := jwt.New(jwt.SigningMethodHS256)
-	claims := token.Claims.(jwt.MapClaims)
-	claims["id"] = user.Id
-	claims["exp"] = time.Now().Add(time.Hour * 2).Unix()
-	// generate encoded token
-	t, err := token.SignedString([]byte("secret"))
+	// build access token
+	token, err := tokenizer.NewAccessToken(user.Id)
 	if err != nil {
 		return nil, echo.NewHTTPError(http.StatusBadRequest, "Failed to create jwt token")
 	}
 
-	return map[string]string{"token": t}, nil
+	return map[string]string{"token": token}, nil
 }
 
 func (s *DefaultUserService) ComparePassword(hash []byte, password string) error {

@@ -2,8 +2,10 @@ package api
 
 import (
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 	"github.com/webcat12345/go-one/core/server"
 	"github.com/webcat12345/go-one/core/services"
+	"github.com/webcat12345/go-one/core/tokenizer"
 	"net/http"
 	"strconv"
 )
@@ -19,11 +21,10 @@ func MountUserHandler(group *echo.Group, service services.UserService) {
 	}
 
 	group.POST("/login", handler.login)
-	// group.GET("/auth")
 
-	group.GET("/users", handler.getUsers)
-	group.GET("/users/:id", handler.getUserById)
-	group.POST("/users", handler.createUser)
+	group.GET("/users", handler.getUsers, middleware.JWTWithConfig(tokenizer.JwtCustomConfig()))
+	group.GET("/users/:id", handler.getUserById, middleware.JWTWithConfig(tokenizer.JwtCustomConfig()))
+	group.POST("/users", handler.createUser, middleware.JWTWithConfig(tokenizer.JwtCustomConfig()))
 }
 
 func (h *userHandler) login(ctx echo.Context) error {

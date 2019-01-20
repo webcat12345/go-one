@@ -20,8 +20,11 @@ func MountUserHandler(group *echo.Group, service services.UserService) {
 		userService: service,
 	}
 
+	// authentication apis
 	group.POST("/login", handler.login)
+	group.GET("/auth", handler.getCurrentUser, middleware.JWTWithConfig(tokenizer.JwtCustomConfig()))
 
+	// user controller apis
 	group.GET("/users", handler.getUsers, middleware.JWTWithConfig(tokenizer.JwtCustomConfig()))
 	group.GET("/users/:id", handler.getUserById, middleware.JWTWithConfig(tokenizer.JwtCustomConfig()))
 	group.POST("/users", handler.createUser, middleware.JWTWithConfig(tokenizer.JwtCustomConfig()))
@@ -42,6 +45,18 @@ func (h *userHandler) login(ctx echo.Context) error {
 	}
 	return ctx.JSON(http.StatusOK, server.JSON{
 		Data:    token,
+		Success: true,
+	})
+}
+
+func (h *userHandler) getCurrentUser(ctx echo.Context) error {
+	id := tokenizer.UserIdFromToken(ctx)
+	user, err := h.userService.GetUserById(id)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(http.StatusOK, server.JSON{
+		Data:    user,
 		Success: true,
 	})
 }

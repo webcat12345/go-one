@@ -23,3 +23,9 @@ func JwtCustomConfig() middleware.JWTConfig {
 
 	return config
 }
+
+func UserIdFromToken(ctx echo.Context) int {
+	user := ctx.Get("user").(*jwt.Token)
+	claims := user.Claims.(*JwtAuthClaims)
+	return claims.Id
+}

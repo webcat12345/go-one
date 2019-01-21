@@ -16,6 +16,7 @@ type (
 		GetUserById(id int) (*model.User, error)
 		CreateUser(email, password string) (*model.User, error)
 		Login(email, password string) (map[string]string, error)
+		Register(email, password, confirmPassword string) (*model.User, error)
 	}
 	DefaultUserService struct {
 		userRepository repository.UserRepository
@@ -81,6 +82,30 @@ func (s *DefaultUserService) Login(email, password string) (map[string]string, e
 	}
 
 	return map[string]string{"token": token}, nil
+}
+
+func (s *DefaultUserService) Register(email, password, confirmPassword string) (*model.User, error) {
+	// validate password
+	if password != confirmPassword {
+		return nil, echo.NewHTTPError(http.StatusBadRequest, "Password and confirm password does not match")
+	}
+
+	// check if email already exists
+	if s.userRepository.ExistsByEmail(email) {
+		return nil, echo.NewHTTPError(http.StatusBadRequest, "Email already exists")
+	}
+
+	// hash password
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Failed to hashing a password")
+	}
+
+	user := &model.User{
+		Email:    email,
+		Password: hash,
+	}
+	return s.userRepository.Create(user)
 }
 
 func (s *DefaultUserService) ComparePassword(hash []byte, password string) error {

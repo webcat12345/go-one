@@ -22,6 +22,7 @@ func MountUserHandler(group *echo.Group, service services.UserService) {
 
 	// authentication apis
 	group.POST("/login", handler.login)
+	group.POST("/register", handler.register)
 	group.GET("/auth", handler.getCurrentUser, middleware.JWTWithConfig(tokenizer.JwtCustomConfig()))
 
 	// user controller apis
@@ -31,13 +32,12 @@ func MountUserHandler(group *echo.Group, service services.UserService) {
 }
 
 func (h *userHandler) login(ctx echo.Context) error {
-	var payload struct {
-		Email    string `json:"email" valid:"required,email"`
-		Password string `json:"password" valid:"required,length(8|64)"`
-	}
-	err := ctx.Bind(&payload)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request")
+	payload := new(struct {
+		Email    string `json:"email" validate:"required,email"`
+		Password string `json:"password" validate:"required,max=64,min=8"`
+	})
+	if err := server.GetPayloadFromRequest(ctx, payload); err != nil {
+		return err
 	}
 	token, err := h.userService.Login(payload.Email, payload.Password)
 	if err != nil {
@@ -45,6 +45,25 @@ func (h *userHandler) login(ctx echo.Context) error {
 	}
 	return ctx.JSON(http.StatusOK, server.JSON{
 		Data:    token,
+		Success: true,
+	})
+}
+
+func (h *userHandler) register(ctx echo.Context) error {
+	payload := new(struct {
+		Email           string `json:"email" validate:"required,email"`
+		Password        string `json:"password" validate:"required,max=64,min=8,eqfield=ConfirmPassword"`
+		ConfirmPassword string `json:"confirmPassword" validate:"required,max=64,min=8,eqfield=Password"`
+	})
+	if err := server.GetPayloadFromRequest(ctx, payload); err != nil {
+		return err
+	}
+	user, err := h.userService.Register(payload.Email, payload.Password, payload.ConfirmPassword)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(http.StatusOK, server.JSON{
+		Data:    user,
 		Success: true,
 	})
 }
@@ -88,13 +107,12 @@ func (h *userHandler) getUsers(ctx echo.Context) error {
 }
 
 func (h *userHandler) createUser(ctx echo.Context) error {
-	var payload struct {
-		Email    string `json:"email" valid:"required,email"`
-		Password string `json:"password" valid:"required,length(8|64)"`
-	}
-	err := ctx.Bind(&payload)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Failed to parse payload")
+	payload := new(struct {
+		Email    string `json:"email" validate:"required,email"`
+		Password string `json:"password" validate:"required,max=64,min=8"`
+	})
+	if err := server.GetPayloadFromRequest(ctx, payload); err != nil {
+		return err
 	}
 	user, err := h.userService.CreateUser(payload.Email, payload.Password)
 

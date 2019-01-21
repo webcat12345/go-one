@@ -8,10 +8,28 @@
   version = "v3.2.0"
 
 [[projects]]
-  name = "github.com/go-sql-driver/mysql"
+  name = "github.com/go-pg/pg"
+  packages = [".","internal","internal/iszero","internal/parser","internal/pool","internal/struct_filter","internal/tag","orm","types"]
+  revision = "e27c7a61ad4e9a57b1259cd9f53f016866e43484"
+  version = "v7.1.6"
+
+[[projects]]
+  name = "github.com/go-playground/locales"
+  packages = [".","currency"]
+  revision = "f63010822830b6fe52288ee52d5a1151088ce039"
+  version = "v0.12.1"
+
+[[projects]]
+  name = "github.com/go-playground/universal-translator"
   packages = ["."]
-  revision = "72cd26f257d44c1114970e19afddcd812016007e"
-  version = "v1.4.1"
+  revision = "b32fa301c9fe55953584134cb6853a13c87ec0a1"
+  version = "v0.16.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/jinzhu/inflection"
+  packages = ["."]
+  revision = "04140366298a54a039076d798123ffa108fff46c"
 
 [[projects]]
   name = "github.com/labstack/echo"
@@ -26,10 +44,10 @@
   version = "v0.2.8"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/lib/pq"
-  packages = [".","oid"]
-  revision = "9eb73efc1fcc404148b56765b0d3f61d9a5ef8ee"
+  name = "github.com/leodido/go-urn"
+  packages = ["."]
+  revision = "70078a794e8ea4b497ba7c19a78cd60f90ccf0f4"
+  version = "v1.1.0"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -44,18 +62,6 @@
   version = "v0.0.4"
 
 [[projects]]
-  name = "github.com/mattn/go-sqlite3"
-  packages = ["."]
-  revision = "c7c4067b79cc51e6dfdcef5c702e74b1e0fa7c75"
-  version = "v1.10.0"
-
-[[projects]]
-  name = "github.com/pressly/goose"
-  packages = [".","cmd/goose"]
-  revision = "7a98874933001af28951c83e958b1db750f39f8d"
-  version = "v2.4.5"
-
-[[projects]]
   name = "github.com/valyala/bytebufferpool"
   packages = ["."]
   revision = "e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7"
@@ -68,15 +74,9 @@
   revision = "dcecefd839c4193db0d35b88ec65b4c12d360ab0"
 
 [[projects]]
-  name = "github.com/ziutek/mymysql"
-  packages = ["godrv","mysql","native"]
-  revision = "e08c2f35356576b3c3690c252fe5dca728ae9292"
-  version = "v1.5.4"
-
-[[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
-  packages = ["acme","acme/autocert"]
+  packages = ["acme","acme/autocert","bcrypt","blowfish","pbkdf2"]
   revision = "ff983b9c42bc9fbf91556e191cc8efb585c16908"
 
 [[projects]]
@@ -86,14 +86,20 @@
   revision = "2be51725563103c17124a318f1745b66f2347acb"
 
 [[projects]]
-  name = "google.golang.org/appengine"
-  packages = ["cloudsql"]
-  revision = "e9657d882bb81064595ca3b56cbe2546bbabf7b1"
-  version = "v1.4.0"
+  name = "gopkg.in/go-playground/validator.v9"
+  packages = ["."]
+  revision = "cdd5c28d217804eec51fa694927e6c57465748f6"
+  version = "v9.25.0"
+
+[[projects]]
+  name = "mellium.im/sasl"
+  packages = ["."]
+  revision = "e58e780e1378aa4df5dc705364ff5ae9a4dd1e04"
+  version = "v0.2.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9e844f910ec0bd644ba4e1ec90f96471c5cc2a7e96098013b3b1a4112081b27a"
+  inputs-digest = "aead40ca9967c3541064a7de5c68092d3a10377f0bb5e0f99aa5804b4c73746c"
   solver-name = "gps-cdcl"
   solver-version = 1
